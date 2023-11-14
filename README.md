@@ -24,10 +24,10 @@ The remaining lines represent the edges in the graph, in the format `VertexA Ver
 and `VertexB` are integers from 1 to V, and Weight is an integer from $-1$ to $1$.  
 For example, a graph with $5$ vertices and $3$ edges would be represented as follows:
 
-    `5 3  
+    5 3  
     1 2 1  
     1 3 1  
-    2 3 -1`  
+    2 3 -1  
 
 The edge between vertices $1$ and $2$ has a weight of $1$, the edge between vertices $1$ and $3$ has a weight of $1$,
 and the edge between vertices $2$ and $3$ has a weight of $-1$.
