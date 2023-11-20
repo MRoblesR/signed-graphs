@@ -7,7 +7,8 @@ def export_graph():
     parser = WikipediaAdminshipElectionParser()
     graphs = parser.parse(path_origin)
     for graph in graphs:
-        graph.save_graph_to_file(path_destination)
+        graph_anonymized, _, _ = graph.generate_numeric_graph()
+        graph_anonymized.save_graph_to_file(path_destination)
 
 
 if __name__ == '__main__':
