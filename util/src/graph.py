@@ -201,20 +201,21 @@ class Graph:
         """
         Generate a numeric graph from the current graph.
 
+        Vertices goes from 1 to n, where n is the number of vertices in the graph.
+
         :return: A tuple containing the generated numeric graph object, a dictionary mapping vertex names to their corresponding numeric indices, and a dictionary mapping numeric indices to their corresponding vertex names.
         """
-        numeric_vertices = {vertex: index for index, vertex in enumerate(self._vertices)}
-        numeric_edges = [
-            (numeric_vertices[edge[0]], numeric_vertices[edge[1]], edge[2]) for edge in self._edges
-        ]
-        numeric_graph = Graph(
-            name=self._name,
-            vertices=list(range(len(self._vertices))),
-            edges=numeric_edges
-        )
+        numeric_graph = Graph(name=self._name, vertices=list(range(1, len(self._vertices) + 1)), edges=[])
+        str_to_int_map: Dict[str, int] = {}
+        int_to_str_map: Dict[int, str] = {}
 
-        str_to_int_map: Dict[str, int] = {str_vertex: numeric_vertices[str_vertex] for str_vertex in self._vertices}
-        int_to_str_map: Dict[int, str] = {numeric_vertices[str_vertex]: str_vertex for str_vertex in self._vertices}
+        for i in range(len(self._vertices)):
+            str_to_int_map[self._vertices[i]] = i + 1
+            int_to_str_map[i + 1] = self._vertices[i]
+
+        for edge in self._edges:
+            numeric_graph.add_edge(str_to_int_map[edge[0]], str_to_int_map[edge[1]], edge[2])
+
 
         return numeric_graph, str_to_int_map, int_to_str_map
 
@@ -223,7 +224,11 @@ class Graph:
         Save the graph to a file in the specified format
         :param file_path: Path to the file to save the graph
         """
-        file_name = file_path + self._name + ".txt"
+        file_name = file_path + self._name
+        # if it does not end with .txt, add .txt
+        if not file_name.endswith('.txt'):
+            file_name += '.txt'
+
         os.makedirs(os.path.dirname(file_path), exist_ok=True)
         with open(file_name, 'w') as file:
             num_vertices = len(self._vertices)
