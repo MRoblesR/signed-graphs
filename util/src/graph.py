@@ -1,5 +1,5 @@
 from typing import Dict, List, Tuple, Union
-
+import os
 
 class Graph:
     """
@@ -224,6 +224,7 @@ class Graph:
         :param file_path: Path to the file to save the graph
         """
         file_name = file_path + self._name + ".txt"
+        os.makedirs(os.path.dirname(file_path), exist_ok=True)
         with open(file_name, 'w') as file:
             num_vertices = len(self._vertices)
             num_edges = len(self._edges)
