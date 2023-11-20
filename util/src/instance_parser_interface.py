@@ -19,7 +19,7 @@ class InstanceParserInterface(ABC):
         :param path: Path to the file containing the graph data
         :return: Tuple containing the name and content of the file (both as strings)
         """
-        with open(path, 'r') as file:
+        with open(path, 'r', errors='ignore') as file:
             file_content = file.read()
             file_name = os.path.basename(path)
         return file_name, file_content
@@ -37,3 +37,4 @@ class InstanceParserInterface(ABC):
                 file_name, file_content = self.read_graph_from_file(file_path)
                 graphs.append((file_name, file_content))
         return graphs
+

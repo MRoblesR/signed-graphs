@@ -223,7 +223,8 @@ class Graph:
         Save the graph to a file in the specified format
         :param file_path: Path to the file to save the graph
         """
-        with open(file_path, 'w') as file:
+        file_name = file_path + self._name + ".txt"
+        with open(file_name, 'w') as file:
             num_vertices = len(self._vertices)
             num_edges = len(self._edges)
             file.write(f"{num_vertices} {num_edges}\n")
