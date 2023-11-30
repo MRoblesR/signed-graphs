@@ -29,7 +29,7 @@ class TestGraph(unittest.TestCase):
     def test_get_adjacent_vertices(self):
         # Test adjacent vertices for a specific vertex
         adjacent_vertices = self.graph.get_adjacent_vertices(2)
-        self.assertEqual(adjacent_vertices, [(3, -1)])  # Expected adjacent vertices for vertex 2
+        self.assertEqual([(1, 1), (3, -1)], adjacent_vertices)
 
     def test_get_degree(self):
         # Test the degree of a specific vertex
@@ -43,11 +43,11 @@ class TestGraph(unittest.TestCase):
 
     def test_save_and_read_graph(self):
         # Save the graph to a file
-        self.graph.save_graph_to_file('graph1.txt')
+        self.graph.save_graph_to_file('test_graphs_folder/', 'test_graph_save.txt')
 
         # Create a new graph and read data from the file
         new_graph = Graph()
-        num_vertices, num_edges, edges = new_graph.read_graph_from_file('graph1.txt')
+        num_vertices, num_edges, edges = new_graph.read_graph_from_file('test_graphs_folder/test_graph_save.txt')
 
         # Assertions to check if the read data matches the original graph data
         self.assertEqual(num_vertices, len(self.vertices))
@@ -56,8 +56,21 @@ class TestGraph(unittest.TestCase):
 
         # Clean up
         import os
-        os.remove('graph1.txt')
+        os.remove('test_graphs_folder/test_graph_save.txt')
 
+    def test_subgraph(self):
+        # Test subgraph
+        """
+        1 2 1
+        1 3 1
+        2 3 -1
+        4 5 2
+        :return:
+        """
+        subgraph = self.graph.subgraph(1)
+        self.assertIsInstance(subgraph, Graph)
+        self.assertEqual([1, 2, 3], subgraph.get_vertices())
+        self.assertEqual([(1, 2, 1), (1, 3, 1)], subgraph.get_edges())
 
 
 if __name__ == '__main__':

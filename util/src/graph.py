@@ -1,5 +1,6 @@
-from typing import Dict, List, Tuple, Union
 import os
+from typing import Dict, List, Tuple, Union
+
 
 class Graph:
     """
@@ -193,8 +194,8 @@ class Graph:
             adjacency_list[vertex] = []
         for edge in self._edges:
             adjacency_list[edge[0]].append((edge[1], edge[2]))
-            # For an undirected graph, add the line below to include the reverse direction
-            # adjacency_list[edge[1]].append((edge[0], edge[2]))
+            # For a directed graph, comment the line below to exclude the reverse direction
+            adjacency_list[edge[1]].append((edge[0], edge[2]))
         return adjacency_list
 
     def generate_numeric_graph(self) -> Tuple['Graph', Dict[str, int], Dict[int, str]]:
@@ -216,15 +217,14 @@ class Graph:
         for edge in self._edges:
             numeric_graph.add_edge(str_to_int_map[edge[0]], str_to_int_map[edge[1]], edge[2])
 
-
         return numeric_graph, str_to_int_map, int_to_str_map
 
-    def save_graph_to_file(self, file_path: str):
+    def save_graph_to_file(self, file_path: str, file_name: str = None):
         """
         Save the graph to a file in the specified format
         :param file_path: Path to the file to save the graph
         """
-        file_name = file_path + self._name
+        file_name = file_path + ((self._name if self._name != "" else "graph") if file_name is None else file_name)
         # if it does not end with .txt, add .txt
         if not file_name.endswith('.txt'):
             file_name += '.txt'
@@ -260,3 +260,69 @@ class Graph:
             self._adjacency_list = self.__generate_adjacency_list()
 
         return num_vertices, num_edges, edges
+
+    def subgraph(self, vertex: "str or int") -> 'Graph':
+        """
+        Returns a subgraph of the current graph, containing only the specified vertex and its adjacent vertices.
+        :param vertex: The vertex for which the subgraph is to be generated.
+        :return: A subgraph of the current graph, containing only the specified vertex and its adjacent vertices.
+        """
+        subgraph_vertices = set()
+        subgraph_edges = []
+        subgraph_vertices.add(vertex)
+        for edge in self._edges:
+            if edge[0] == vertex:
+                subgraph_vertices.add(edge[1])
+                subgraph_edges.append(edge)
+            elif edge[1] == vertex:
+                subgraph_vertices.add(edge[0])
+                subgraph_edges.append(edge)
+        return Graph(name=self._name, vertices=list(subgraph_vertices), edges=subgraph_edges)
+
+    def union(self, other: "Graph") -> "Graph":
+        """
+        Returns the union of the current graph and the specified graph.
+        :param other: The graph to be unioned with the current graph.
+        :return: The union of the current graph and the specified graph.
+        """
+        union_edges = self._edges + other.get_edges()
+        return Graph(name=self._name, vertices=self._vertices, edges=union_edges)
+
+    def print_graph(self):
+        """
+        Prints the graph as a png image.
+        """
+        import networkx as nx
+        import matplotlib.pyplot as plt
+
+        G = nx.Graph()
+        G.add_nodes_from(self._vertices)
+        G.add_weighted_edges_from(self._edges)
+        nx.draw(G, with_labels=True)
+        plt.show()
+
+    def average_degree(self):
+        """
+        Returns the average degree of the graph.
+        """
+        return sum([self.get_degree(vertex) for vertex in self._vertices]) / len(self._vertices)
+
+    def average_negative_degree(self):
+        """
+        Returns the average negative degree of the graph.
+        """
+        return sum([self.get_degree(vertex) for vertex in self._vertices if self.get_degree(vertex) < 0]) / len(
+            [vertex for vertex in self._vertices if self.get_degree(vertex) < 0])
+
+    def average_positive_degree(self):
+        """
+        Returns the average positive degree of the graph.
+        """
+        return sum([self.get_degree(vertex) for vertex in self._vertices if self.get_degree(vertex) > 0]) / len(
+            [vertex for vertex in self._vertices if self.get_degree(vertex) > 0])
+
+    def average_weight(self):
+        """
+        Returns the average weight of the graph.
+        """
+        return sum([edge[2] for edge in self._edges]) / len(self._edges)
