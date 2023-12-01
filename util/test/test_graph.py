@@ -21,6 +21,15 @@ class TestGraph(unittest.TestCase):
     def test_get_edges(self):
         self.assertEqual(self.graph.get_edges(), self.edges)
 
+        # number of edges
+        self.assertEqual(len(self.graph.get_edges()), 4)
+
+        # number of positive edges
+        self.assertEqual(2, self.graph.get_number_of_positives_edges())
+
+        # number of negative edges
+        self.assertEqual(2, self.graph.get_number_of_positives_edges())
+
     def test_get_adjacency_list(self):
         # Test adjacency list for a specific vertex
         adjacency_list = self.graph.get_adjacency_list()
@@ -64,13 +73,99 @@ class TestGraph(unittest.TestCase):
         1 2 1
         1 3 1
         2 3 -1
-        4 5 2
-        :return:
+        4 5 -1
         """
         subgraph = self.graph.subgraph(1)
         self.assertIsInstance(subgraph, Graph)
         self.assertEqual([1, 2, 3], subgraph.get_vertices())
-        self.assertEqual([(1, 2, 1), (1, 3, 1)], subgraph.get_edges())
+        self.assertEqual([(1, 2, 1), (1, 3, 1), (2, 3, -1)], subgraph.get_edges())
+
+
+    def test_print_graph(self):
+        # check that the file is created and then deleted
+        import os
+        subgraph = self.graph.subgraph(1)
+        subgraph.print_graph('test_graphs_folder/', 'test_graph_print.txt')
+        self.assertTrue(os.path.exists('test_graphs_folder/test_graph_print.txt.png'))
+        os.remove('test_graphs_folder/test_graph_print.txt.png')
+
+
+    def test_degree(self):
+        """
+        Testing functions:
+        get_degree (of the graph and of a specific vertex)
+        get_positive_degree (of the graph and of a specific vertex)
+        get_negative_degree (of the graph and of a specific vertex)
+        get_average_degree
+        get_average_negative_degree
+        get_average_positive_degree
+        Using the following graph:
+        1 2 1
+        1 3 1
+        2 3 -1
+        4 5 -1
+        """
+        # Test get_degree of the graph
+        self.assertEqual(2, self.graph.get_degree())
+
+        # Test get degree of a specific vertex
+        self.assertEqual(2, self.graph.get_degree(1))
+        self.assertEqual(2, self.graph.get_degree(2))
+        self.assertEqual(2, self.graph.get_degree(3))
+        self.assertEqual(1, self.graph.get_degree(4))
+        self.assertEqual(1, self.graph.get_degree(5))
+
+        # Test get_positive_degree of the graph
+        self.assertEqual(2, self.graph.get_positive_degree())
+
+        # Test get_positive_degree of a specific vertex
+        self.assertEqual(2, self.graph.get_positive_degree(1))
+        self.assertEqual(1, self.graph.get_positive_degree(2))
+        self.assertEqual(1, self.graph.get_positive_degree(3))
+        self.assertEqual(0, self.graph.get_positive_degree(4))
+        self.assertEqual(0, self.graph.get_positive_degree(5))
+
+        # Test get_negative_degree of the graph
+        self.assertEqual(1, self.graph.get_negative_degree())
+
+        # Test get_negative_degree of a specific vertex
+        self.assertEqual(0, self.graph.get_negative_degree(1))
+        self.assertEqual(1, self.graph.get_negative_degree(2))
+        self.assertEqual(1, self.graph.get_negative_degree(3))
+        self.assertEqual(1, self.graph.get_negative_degree(4))
+        self.assertEqual(1, self.graph.get_negative_degree(5))
+
+        # Test get_average_degree
+        self.assertEqual((2+2+2+1+1)/5, self.graph.get_average_degree())
+
+        # Test get_average_positive_degree
+        self.assertEqual((2+1+1+0+0)/5, self.graph.get_average_positive_degree())
+
+        # Test get_average_negative_degree
+        self.assertEqual((0+1+1+1+1)/5, self.graph.get_average_negative_degree())
+
+
+    def test_density(self):
+        """
+        Testing functions:
+        get_density
+        get_positive_density
+        get_negative_density
+        Using the following graph:
+        1 2 1
+        1 3 1
+        2 3 -1
+        4 5 -1
+        """
+        # Test get_density
+        self.assertEqual((2*4)/(5*(5-1)), self.graph.get_density())
+
+        # Test get_positive_density
+        self.assertEqual((2*2)/(5*(5-1)), self.graph.get_positive_density())
+
+        # Test get_negative_density
+        self.assertEqual((2*2)/(5*(5-1)), self.graph.get_negative_density())
+
 
 
 if __name__ == '__main__':
