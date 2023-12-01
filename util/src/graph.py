@@ -158,19 +158,6 @@ class Graph:
         """
         return self._adjacency_list[vertex]
 
-    def get_degree(self, vertex: Union[str, int]) -> int:
-        """
-            This method `get_degree` is used to calculate the degree of a vertex in a Graph.
-
-            :param vertex: The vertex whose degree needs to be calculated. It can be of type `int` or `str`.
-            :return: Returns an integer representing the degree of the vertex.
-        """
-        degree: int = 0
-        for edge in self._edges:
-            if edge[0] == vertex or edge[1] == vertex:
-                degree += 1
-        return degree
-
     def add_edge(self, u, v, weight):
         """
         Add an edge to the graph
@@ -264,20 +251,23 @@ class Graph:
     def subgraph(self, vertex: "str or int") -> 'Graph':
         """
         Returns a subgraph of the current graph, containing only the specified vertex and its adjacent vertices.
+        It also includes the edges between the adjacent vertices.
         :param vertex: The vertex for which the subgraph is to be generated.
         :return: A subgraph of the current graph, containing only the specified vertex and its adjacent vertices.
         """
         subgraph_vertices = set()
-        subgraph_edges = []
+        subgraph_edges = set()
         subgraph_vertices.add(vertex)
         for edge in self._edges:
-            if edge[0] == vertex:
-                subgraph_vertices.add(edge[1])
-                subgraph_edges.append(edge)
-            elif edge[1] == vertex:
+            if edge[0] == vertex or edge[1] == vertex:
+                subgraph_edges.add(edge)
                 subgraph_vertices.add(edge[0])
-                subgraph_edges.append(edge)
-        return Graph(name=self._name, vertices=list(subgraph_vertices), edges=subgraph_edges)
+                subgraph_vertices.add(edge[1])
+        # loop over the edges again to add the edges between the adjacent vertices
+        for edge in self._edges:
+            if edge[0] in subgraph_vertices and edge[1] in subgraph_vertices:
+                subgraph_edges.add(edge)
+        return Graph(name=self._name, vertices=list(subgraph_vertices), edges=list(subgraph_edges))
 
     def union(self, other: "Graph") -> "Graph":
         """
@@ -288,9 +278,11 @@ class Graph:
         union_edges = self._edges + other.get_edges()
         return Graph(name=self._name, vertices=self._vertices, edges=union_edges)
 
-    def print_graph(self):
+    def print_graph(self, file_path: str = None, file_name: str = None):
         """
-        Prints the graph as a png image.
+        Prints the graph as a png image using networkx and matplotlib.
+        :param file_path: Path to the file to save the graph. If it is none, just show it
+        :param file_name: Name of the file to save the graph. if its note, it will use the graph name. If graph name is none or "" just leavi it as graph
         """
         import networkx as nx
         import matplotlib.pyplot as plt
@@ -298,31 +290,140 @@ class Graph:
         G = nx.Graph()
         G.add_nodes_from(self._vertices)
         G.add_weighted_edges_from(self._edges)
-        nx.draw(G, with_labels=True)
-        plt.show()
+        pos = nx.random_layout(G)
+        nx.draw(G, pos, with_labels=True)
+        labels = nx.get_edge_attributes(G, 'weight')
+        nx.draw_networkx_edge_labels(G, pos, edge_labels=labels)
+        if file_path is None:
+            plt.show()
+        else:
+            file_name = file_path + ((self._name if self._name != "" else "graph") if file_name is None else file_name)
+            # if it does not end with .png, add .png
+            if not file_name.endswith('.png'):
+                file_name += '.png'
+            os.makedirs(os.path.dirname(file_path), exist_ok=True)
+            plt.savefig(file_name)
+            plt.close()
 
-    def average_degree(self):
+
+    def get_degree(self, vertex: Union[str, int] = None) -> int:
+        """
+            This method `get_degree` is used to calculate the degree of a vertex in a Graph.
+            :param vertex: The vertex whose degree needs to be calculated. It can be of type `int` or `str`. If `None` is passed, the degree of all vertices will be calculated and returned the maximum degree of all vertices.
+            :return: Returns an integer representing the degree of the vertex.
+        """
+        if vertex is None:
+            return max([self.get_degree(vertex) for vertex in self._vertices])
+        degree: int = 0
+        for edge in self._edges:
+            if edge[0] == vertex or edge[1] == vertex:
+                degree += 1
+        return degree
+
+    def get_positive_degree(self, vertex: Union[str, int] = None) -> int:
+        """
+            This method `get_positive_degree` is used to calculate the positive degree of a vertex in a Graph.
+            :param vertex: The vertex whose positive degree needs to be calculated. It can be of type `int` or `str`. If `None` is passed, the positive degree of all vertices will be calculated and returned the maximum positive degree of all vertices.
+            :return: Returns an integer representing the positive degree of the vertex.
+        """
+        if vertex is None:
+            return max([self.get_positive_degree(vertex) for vertex in self._vertices])
+        degree: int = 0
+        for edge in self._edges:
+            if edge[0] == vertex or edge[1] == vertex:
+                if edge[2] > 0:
+                    degree += 1
+        return degree
+
+
+    def get_negative_degree(self, vertex: Union[str, int] = None) -> int:
+        """
+            This method `get_negative_degree` is used to calculate the negative degree of a vertex in a Graph.
+            :param vertex: The vertex whose negative degree needs to be calculated. It can be of type `int` or `str`. If `None` is passed, the negative degree of all vertices will be calculated and returned the maximum negative degree of all vertices.
+            :return: Returns an integer representing the negative degree of the vertex.
+        """
+        if vertex is None:
+            return max([self.get_negative_degree(vertex) for vertex in self._vertices])
+        degree: int = 0
+        for edge in self._edges:
+            if edge[0] == vertex or edge[1] == vertex:
+                if edge[2] < 0:
+                    degree += 1
+        return degree
+
+    def get_average_degree(self):
         """
         Returns the average degree of the graph.
         """
         return sum([self.get_degree(vertex) for vertex in self._vertices]) / len(self._vertices)
 
-    def average_negative_degree(self):
+    def get_average_negative_degree(self):
         """
         Returns the average negative degree of the graph.
         """
-        return sum([self.get_degree(vertex) for vertex in self._vertices if self.get_degree(vertex) < 0]) / len(
-            [vertex for vertex in self._vertices if self.get_degree(vertex) < 0])
+        return sum([self.get_negative_degree(vertex) for vertex in self._vertices]) / len(self._vertices)
 
-    def average_positive_degree(self):
+    def get_average_positive_degree(self):
         """
         Returns the average positive degree of the graph.
         """
-        return sum([self.get_degree(vertex) for vertex in self._vertices if self.get_degree(vertex) > 0]) / len(
-            [vertex for vertex in self._vertices if self.get_degree(vertex) > 0])
+        return sum([self.get_positive_degree(vertex) for vertex in self._vertices]) / len(self._vertices)
 
-    def average_weight(self):
+    def get_average_weight(self):
         """
         Returns the average weight of the graph.
         """
         return sum([edge[2] for edge in self._edges]) / len(self._edges)
+
+    def get_density(self):
+        """
+        Returns the density of the graph.
+        """
+        return 2*len(self._edges) / (len(self._vertices) * (len(self._vertices) - 1))
+
+    def get_positive_density(self):
+        """
+        Returns the positive density of the graph.
+        """
+        return 2*self.get_number_of_positives_edges() / (len(self._vertices) * (len(self._vertices) - 1))
+
+    def get_negative_density(self):
+        """
+        Returns the negative density of the graph.
+
+        """
+        return 2*self.get_number_of_negatives_edges() / (len(self._vertices) * (len(self._vertices) - 1))
+
+    def get_number_of_positives_edges(self):
+        """
+        Calculates the number of positive edges in the graph.
+
+        :return: The number of positive edges in the graph.
+        :rtype: int
+        """
+        number_of_positives_edges = 0
+        for edge in self._edges:
+            if edge[2] > 0:
+                number_of_positives_edges += 1
+        return number_of_positives_edges
+
+    def get_number_of_negatives_edges(self):
+        """
+        Returns the number of negative edges in the graph.
+
+        :return: The number of negative edges.
+        """
+        number_of_negatives_edges = 0
+        for edge in self._edges:
+            if edge[2] < 0:
+                number_of_negatives_edges += 1
+        return number_of_negatives_edges
+
+    def is_complete(self):
+        """
+        Returns true if the graph is complete.
+        """
+        for vertex in self._vertices:
+            if self.get_degree(vertex) != len(self._vertices) - 1:
+                return False
+        return True
