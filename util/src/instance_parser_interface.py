@@ -6,6 +6,7 @@ from util.src.graph import Graph
 
 
 class InstanceParserInterface(ABC):
+
     @abstractmethod
     def parse(self, path: str) -> 'Graph':
         """
@@ -39,6 +40,10 @@ class InstanceParserInterface(ABC):
                 file_name, file_content = self.read_graph_from_file(file_path)
                 graphs.append((file_name, file_content))
         return graphs
+
+    def export_graph_properties(self, path: str, file_name: str, graph: Graph):
+        l=[graph]
+        self.export_properties(path,file_name,l)
 
     def export_properties(self, path: str, file_name: str, graphs: List[Graph]):
         """
