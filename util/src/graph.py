@@ -1,5 +1,6 @@
 import os
 from typing import Dict, List, Tuple, Union
+import random
 
 
 class Graph:
@@ -269,6 +270,18 @@ class Graph:
                 subgraph_edges.add(edge)
         return Graph(name=self._name, vertices=list(subgraph_vertices), edges=list(subgraph_edges))
 
+    def generate_subgraph(self, min_num_vertices):
+        random.seed(42)
+        new_graph = Graph(str(min_num_vertices)+self.get_name())
+        unused_vertices = self.get_vertices().copy()
+
+        while len(new_graph.get_vertices()) < min_num_vertices and unused_vertices:
+            random_vertex= unused_vertices.pop(random.randint(0,len(unused_vertices)-1))
+            new_graph=new_graph.union(self.subgraph(random_vertex))
+            for v in self.get_adjacent_vertices(random_vertex):
+                if v[0] in unused_vertices:
+                    unused_vertices.remove(v[0])
+        return new_graph
     def union(self, other: "Graph") -> "Graph":
         """
         Returns the union of the current graph and the specified graph.
@@ -276,7 +289,8 @@ class Graph:
         :return: The union of the current graph and the specified graph.
         """
         union_edges = self._edges + other.get_edges()
-        return Graph(name=self._name, vertices=self._vertices, edges=union_edges)
+        union_vertices = self._vertices+other.get_vertices()
+        return Graph(name=self._name, vertices=union_vertices, edges=union_edges)
 
     def print_graph(self, file_path: str = None, file_name: str = None):
         """
@@ -304,7 +318,6 @@ class Graph:
             os.makedirs(os.path.dirname(file_path), exist_ok=True)
             plt.savefig(file_name)
             plt.close()
-
 
     def get_degree(self, vertex: Union[str, int] = None) -> int:
         """
@@ -334,7 +347,6 @@ class Graph:
                 if edge[2] > 0:
                     degree += 1
         return degree
-
 
     def get_negative_degree(self, vertex: Union[str, int] = None) -> int:
         """
@@ -379,20 +391,20 @@ class Graph:
         """
         Returns the density of the graph.
         """
-        return 2*len(self._edges) / (len(self._vertices) * (len(self._vertices) - 1))
+        return 2 * len(self._edges) / (len(self._vertices) * (len(self._vertices) - 1))
 
     def get_positive_density(self):
         """
         Returns the positive density of the graph.
         """
-        return 2*self.get_number_of_positives_edges() / (len(self._vertices) * (len(self._vertices) - 1))
+        return 2 * self.get_number_of_positives_edges() / (len(self._vertices) * (len(self._vertices) - 1))
 
     def get_negative_density(self):
         """
         Returns the negative density of the graph.
 
         """
-        return 2*self.get_number_of_negatives_edges() / (len(self._vertices) * (len(self._vertices) - 1))
+        return 2 * self.get_number_of_negatives_edges() / (len(self._vertices) * (len(self._vertices) - 1))
 
     def get_number_of_positives_edges(self):
         """

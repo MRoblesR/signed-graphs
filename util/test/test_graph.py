@@ -80,6 +80,18 @@ class TestGraph(unittest.TestCase):
         self.assertEqual([1, 2, 3], subgraph.get_vertices())
         self.assertEqual([(1, 2, 1), (1, 3, 1), (2, 3, -1)], subgraph.get_edges())
 
+    def test_generate_subgraph(self):
+        # Test subgraph
+        """
+        1 2 1
+        1 3 1
+        2 3 -1
+        4 5 -1
+        """
+        subgraph = self.graph.generate_subgraph(3)
+        self.assertIsInstance(subgraph, Graph)
+        self.assertEqual([1, 2, 3], subgraph.get_vertices())
+        self.assertEqual([(1, 2, 1), (1, 3, 1), (2, 3, -1)], subgraph.get_edges())
 
     def test_print_graph(self):
         # check that the file is created and then deleted

@@ -15,7 +15,7 @@ class TestInstanceParserInterface(unittest.TestCase):
     def test_read_graph_from_file(self):
         file_path = 'test_graphs_folder/graph1.txt'
         expected_name = 'graph1.txt'
-        expected_content = '1 2 1\n1 3 1\n2 3 -1\n4 5 2\n'
+        expected_content = '1 2 1\n1 3 1\n2 3 -1\n4 5 -1\n'
         name, content = self.parser.read_graph_from_file(file_path)
         self.assertEqual(name, expected_name)
         self.assertEqual(content, expected_content)
@@ -23,7 +23,7 @@ class TestInstanceParserInterface(unittest.TestCase):
     def test_read_graphs_from_path(self):
         dir_path = 'test_graphs_folder'
         expected_files = ['graph1.txt', 'graph2.txt', 'graph3.txt']
-        expected_content = '1 2 1\n1 3 1\n2 3 -1\n4 5 2\n'
+        expected_content = '1 2 1\n1 3 1\n2 3 -1\n4 5 -1\n'
         expected_contents = [
             expected_content,
             expected_content,
