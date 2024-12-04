@@ -1,0 +1,33 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: Signed Graph Collection
+message: >-
+  If you use either the software of the instances, please
+  cite it as below.
+type: dataset
+authors:
+  - given-names: Marcos
+    family-names: Robles
+    orcid: 'https://orcid.org/0000-0002-8376-6209'
+    email: marcos.robles@urjc.es
+    affiliation: Universidad Rey Juan Carlos
+  - given-names: Sergio
+    family-names: Cavero
+    email: sergio.cavero@urjc.es
+    affiliation: Universidad Rey Juan Carlos
+    orcid: 'https://orcid.org/0000-0002-5258-5915'
+repository-code: 'https://github.com/MRoblesR/signed-graphs'
+abstract: >-
+  In this repository, there are signed undirected graphs.
+  These graphs are directly taken or adapted from other
+  graphs.
+keywords:
+  - graphs
+  - signed
+  - weighted
+  - instances
+  - graph layout problem
+license: Apache-2.0
+
