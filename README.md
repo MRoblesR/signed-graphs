@@ -8,11 +8,11 @@ This is the structure of the repository:
 * `LICENSE`: the license file.
 * `datasets/`: directory containing the datasets.
 * `code/`: directory containing the source code.
-* `origin/`: directory containing the original datasets.
+* `source-instances/`: directory containing the original datasets.
 
 Then, for each instance within the dataset directory, there is also a repository with the same name in the `code/` directory.
 
-This repository contains the source code used to generate the instance. Similarly, there is a repository with the same name in the `origin/` directory. This repository contains the original instance.
+This repository contains the source code used to generate the instance. Similarly, there is a repository with the same name in the `source-instances/` directory. This repository contains the original instance.
 
 ## Format
 
