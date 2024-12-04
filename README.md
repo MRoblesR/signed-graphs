@@ -8,12 +8,11 @@ This is the structure of the repository:
 * `LICENSE`: the license file.
 * `datasets/`: directory containing the datasets.
 * `code/`: directory containing the source code.
-* `original/`: directory containing the original datasets.
+* `origin/`: directory containing the original datasets.
 
-Then, for each instance within the dataset directory, there is also a repository with the same name in the `code/`
-directory.
-This repository contains the source code used to generate the instance. Similarly, there is a repository with the same
-name in the `original/` directory. This repository contains the original instance.
+Then, for each instance within the dataset directory, there is also a repository with the same name in the `code/` directory.
+
+This repository contains the source code used to generate the instance. Similarly, there is a repository with the same name in the `origin/` directory. This repository contains the original instance.
 
 ## Format
 
@@ -29,8 +28,7 @@ For example, a graph with $5$ vertices and $3$ edges would be represented as fol
     1 3 1  
     2 3 -1  
 
-The edge between vertices $1$ and $2$ has a weight of $1$, the edge between vertices $1$ and $3$ has a weight of $1$,
-and the edge between vertices $2$ and $3$ has a weight of $-1$.
+The edge between vertices $1$ and $2$ has a weight of $1$, the edge between vertices $1$ and $3$ has a weight of $1$, and the edge between vertices $2$ and $3$ has a weight of $-1$.
 
 ## Datasets
 
@@ -45,14 +43,7 @@ Index:
 #### Dataset description
 
 Wikipedia is a free encyclopedia written collaboratively by volunteers around the world. A small part of Wikipedia
-contributors are administrators, who are users with access to additional technical features that aid in maintenance. In
-order for a user to become an administrator a Request for adminship (RfA) is issued and the Wikipedia community via a
-public discussion or a vote decides who to promote to adminship. Using the latest complete dump of Wikipedia page edit
-history (from January 3 2008) we extracted all administrator elections and vote history data. This gave us nearly 2,800
-elections with around 100,000 total votes and about 7,000 users participating in the elections (either casting a vote or
-being voted on). Out of these 1,200 elections resulted in a successful promotion, while about 1,500 elections did not
-result in the promotion. About half of the votes in the dataset are by existing admins, while the other half comes from
-ordinary Wikipedia users.
+contributors are administrators, who are users with access to additional technical features that aid in maintenance. In order for a user to become an administrator a Request for adminship (RfA) is issued and the Wikipedia community via a public discussion or a vote decides who to promote to adminship. Using the latest complete dump of Wikipedia page edit history (from January 3 2008) we extracted all administrator elections and vote history data. This gave us nearly 2,800 elections with around 100,000 total votes and about 7,000 users participating in the elections (either casting a vote or being voted on). Out of these 1,200 elections resulted in a successful promotion, while about 1,500 elections did not result in the promotion. About half of the votes in the dataset are by existing admins, while the other half comes from ordinary Wikipedia users.
 
 #### Dataset conversion
 
